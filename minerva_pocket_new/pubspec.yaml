@@ -54,6 +54,11 @@ flutter:
 
   assets:
     - images/minerva.png
+    - images/fundo1.jpg
+    - images/fundo2.jpg
+    - images/fundo3.jpg
+    - images/fundo4.jpg
+    - images/fundo5.jpg
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.

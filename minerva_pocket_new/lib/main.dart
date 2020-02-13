@@ -11,7 +11,7 @@ class MyApp extends StatelessWidget {
       title: 'Minerva Pocket',
       theme: ThemeData(
         primarySwatch: Colors.blue,
-        primaryColor: Color.fromARGB(255, 4, 125, 141),
+        primaryColor: Color(0xff00a550),
       ),
       debugShowCheckedModeBanner: false,
       home: HomeScreen(),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:minerva_pocket_new/tabs/category_tab.dart';
 
 class HomeTab extends StatelessWidget {
   @override
@@ -14,18 +15,26 @@ class HomeTab extends StatelessWidget {
     return Stack(
       children: <Widget>[
         _buildBodyBack(),
-        CustomScrollView(
-          slivers: <Widget>[
-            SliverAppBar(
-              floating: true,
-              snap: true,
-              backgroundColor: Colors.transparent,
-              flexibleSpace: FlexibleSpaceBar(
-                title: const Text("Minerva Pocket"),
-              ),
-              elevation: 0.0,
+        DefaultTabController(
+          length: 2,
+          child: Scaffold(
+            backgroundColor: Color(0xff00a550),
+            appBar: TabBar(
+              indicatorColor: Colors.white,
+              tabs: [
+                Tab(
+                  text: "Categorias",
+                ),
+                Tab(text: "Navegar"),
+              ],
             ),
-          ],
+            body: TabBarView(
+              children: [
+                CategoryTab(),
+                Icon(Icons.directions_transit),
+              ],
+            ),
+          ),
         ),
       ],
     );
