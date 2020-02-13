@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "413757147054",
+    "firebase_url": "https://minerva-pocket.firebaseio.com",
+    "project_id": "minerva-pocket",
+    "storage_bucket": "minerva-pocket.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:413757147054:android:c13c57e1c3889f6c91aa3f",
+        "android_client_info": {
+          "package_name": "br.com.devmob.minerva_pocket_new"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "413757147054-l47ujke7eg5tb5085bt1t19nmp8gb05o.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB_4jpuypbKhppEQNlsFHg9zWX0UU99Y5g"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "413757147054-l47ujke7eg5tb5085bt1t19nmp8gb05o.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
