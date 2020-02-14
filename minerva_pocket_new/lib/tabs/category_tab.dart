@@ -1,9 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:minerva_pocket_new/screens/acedemic_screen.dart';
 import 'package:minerva_pocket_new/screens/food_screen.dart';
 import 'package:minerva_pocket_new/screens/services_screen.dart';
 import 'package:transparent_image/transparent_image.dart';
 
+//Tela Inicial Do Aplicativo basicamente, onde se encontram as principais categorias
+//Future - Primeiros pegamos dos dados do Firebase, depois a tela vai sendo desenhada
 class CategoryTab extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -14,7 +17,14 @@ class CategoryTab extends StatelessWidget {
           switch (snapshot.connectionState) {
             case ConnectionState.none:
             case ConnectionState.waiting:
-              return CircularProgressIndicator();
+              //Indicador de Progresso
+              return Container(
+                height: 200.0,
+                alignment: Alignment.center,
+                child: CircularProgressIndicator(
+                  valueColor: AlwaysStoppedAnimation<Color>(Colors.black),
+                ),
+              );
             default:
               List<DocumentSnapshot> documents =
                   snapshot.data.documents.toList();
@@ -22,6 +32,9 @@ class CategoryTab extends StatelessWidget {
                   itemCount: documents.length,
                   itemBuilder: (context, index) {
                     return GestureDetector(
+                      //A tela que aparece depende da categoria do firebase
+                      //Ex: Se a categoria for Serviços vai pra tela de Serviços
+                      //Cada tela possui um construtor que recebe o ID do documento do firebase para facilitar o caminho de pesquisa
                       onTap: () {
                         if (documents[index].data["categoria"].toString() ==
                             "Serviços") {
@@ -39,19 +52,27 @@ class CategoryTab extends StatelessWidget {
                           Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) => FoodScreen(
+                                  builder: (context) =>
+                                      FoodScreen(documents[index].documentID)));
+                        } else if (documents[index]
+                                .data["categoria"]
+                                .toString() ==
+                            "Acadêmico") {
+                          print(documents[index].documentID);
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => AcademicScreen(
                                       documents[index].documentID)));
                         }
                       },
                       child: Stack(
                         children: <Widget>[
-                          //Image.network(documents[index].data["image"]),
                           FadeInImage.memoryNetwork(
                             placeholder: kTransparentImage,
                             image: documents[index].data["image"],
                             fit: BoxFit.cover,
                           ),
-                          
                           Container(
                             padding: EdgeInsets.only(top: 135.0, left: 10.0),
                             child: Text(

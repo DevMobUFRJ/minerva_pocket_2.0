@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+//Widget clicável do menu lateral
 class DrawerTile extends StatelessWidget {
   final IconData icon;
   final String text;
@@ -13,6 +14,7 @@ class DrawerTile extends StatelessWidget {
       color: Colors.transparent,
       child: InkWell(
         onTap: () {
+          //Isso faz o menu fechar quando algum botão é pressionado
           Navigator.of(context).pop();
           pageController.jumpToPage(page);
         },
@@ -20,21 +22,16 @@ class DrawerTile extends StatelessWidget {
           padding: EdgeInsets.only(left: 25.0),
           height: 60.0,
           child: Row(children: <Widget>[
-            Icon(
-              icon,
-              size: 32.0,
-              color: Colors.white
-            ),
+            Icon(icon, size: 32.0, color: Colors.white),
             SizedBox(
               width: 20.0,
             ),
             Text(
               text,
               style: TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize:18.0,
-                color: Colors.white
-              ),
+                  fontWeight: FontWeight.bold,
+                  fontSize: 18.0,
+                  color: Colors.white),
             ),
           ]),
         ),

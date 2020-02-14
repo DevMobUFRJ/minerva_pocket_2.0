@@ -22,10 +22,6 @@ class HomeScreen extends StatelessWidget {
                 onPressed: () => _scaffoldKey.currentState.openDrawer()),
           ),
         ),
-        Container(color: Colors.black),
-        Container(
-          color: Colors.red,
-        ),
       ],
     );
   }

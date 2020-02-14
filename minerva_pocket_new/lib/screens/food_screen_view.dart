@@ -1,10 +1,12 @@
 import 'dart:async';
 
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:transparent_image/transparent_image.dart';
 
+//Tela que mostra os dados do restaurante
+//Localização ainda não funciona
+//Tela precisa ser melhorada, sobretudo em questão de layout
 class FoodScreenView extends StatefulWidget {
   final String nome;
   final String image;
@@ -22,41 +24,18 @@ class FoodScreenView extends StatefulWidget {
 
 class _FoodScreenViewState extends State<FoodScreenView> {
   Completer<GoogleMapController> _controller = Completer();
-  static const LatLng _center = const LatLng(45.521563, -122.677433);
 
-  void _onMapCreated(GoogleMapController controller) {
-    _controller.complete(controller);
-  }
+  static final CameraPosition _kGooglePlex = CameraPosition(
+    target: LatLng(37.42796133580664, -122.085749655962),
+    zoom: 14.4746,
+  );
 
-  /*Map<String, dynamic> maps = new Map<String, dynamic>();
-  Future getList() async {
-    var firestore = Firestore.instance;
+  static final CameraPosition _kLake = CameraPosition(
+      bearing: 192.8334901395799,
+      target: LatLng(37.43296265331129, -122.08832357078792),
+      tilt: 59.440717697143555,
+      zoom: 19.151926040649414);
 
-    DocumentReference docRef = firestore
-        .collection("home")
-        .document(widget.foodScreenId)
-        .collection("restaurantes")
-        .document(widget.idDocument);
-    docRef.get().then((datasnapshot) {
-      if (datasnapshot.exists) {
-        maps["nome"] = datasnapshot.data["nome"];
-        maps["image"] = datasnapshot.data["image"];
-        print(maps["image"]);
-      }
-    });
-  }
-    @override
-  initState() {
-    super.initState();
-      setState(() {
-        getList();
-    });
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-  }*/
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -157,101 +136,22 @@ class _FoodScreenViewState extends State<FoodScreenView> {
             height: 15.0,
           ),
           Container(
-            height: 200,
+            height: 500,
             child: GoogleMap(
-              onMapCreated: _onMapCreated,
-              initialCameraPosition: CameraPosition(
-                target: _center,
-                zoom: 11.0,
-              ),
+              mapType: MapType.hybrid,
+              initialCameraPosition: _kGooglePlex,
+              onMapCreated: (GoogleMapController controller) {
+                _controller.complete(controller);
+              },
             ),
           )
         ],
       ),
     );
-    //getList();
-    //print(maps["nome"]);
-    /*Firestore.instance
-          .collection("home")
-          .document(widget.foodScreenId)
-          .collection("restaurantes")
-          .document(widget.idDocument)
-          .get()
-          .then((DocumentSnapshot) {
-                  print(DocumentSnapshot.data["image"]);
-        maps["nome"] = DocumentSnapshot.data["nome"];
-        maps["tipo"] = DocumentSnapshot.data["tipo"];
-        maps["Preços"] = DocumentSnapshot.data["Preços"];
-        maps["Pagamento"] = DocumentSnapshot.data["Pagamento"];
-        maps["Localização"] = DocumentSnapshot.data["Localização"];
-        maps["image"] = DocumentSnapshot.data["image"];
-      });
-    return Container(
-      color: Colors.white,
-      child: ListView(children: <Widget>[
-        Stack(children: <Widget>[
-          FadeInImage.memoryNetwork(
-            placeholder: kTransparentImage,
-            image: maps["image"],
-            fit: BoxFit.cover,
-          ),
-          GestureDetector(
-            child: Icon(
-              Icons.arrow_back,
-              size: 35.0,
-            ),
-            onTap: () {
-              Navigator.of(context).pop();
-            },
-          ),
-          Container(
-            padding: EdgeInsets.only(top: 135.0, left: 10.0),
-            child: Text(
-              maps["nome"],
-              style: TextStyle(fontSize: 20.0, color: Colors.white),
-            ),
-          ),
-        ]),
-        Column(
-          children: <Widget>[Text(maps["tipo"])],
-        )
-      ]),
-    );*/
-    /*return Container(
-        child: FutureBuilder(
-      future: getList(),
-      builder: (context, snapshot) {
-        switch (snapshot.connectionState) {
-          case ConnectionState.none:
-          case ConnectionState.waiting:
-          //print(maps["nome"]);
-            return Container(
-              height: 200.0,
-              alignment: Alignment.center,
-              child: CircularProgressIndicator(
-                valueColor: AlwaysStoppedAnimation<Color>(Colors.black),
-              ),
-            );
-          default:
-            return ListView(
-              children: <Widget>[
-                Stack(
-                  children: <Widget>[
-                    //Image.network(documents[index].data["image"]),
-                    Image.network(maps["image"]),
-                    Container(
-                      padding: EdgeInsets.only(top: 135.0, left: 10.0),
-                      child: Text(
-                        maps["nome"],
-                        style: TextStyle(fontSize: 30.0, color: Colors.white),
-                      ),
-                    ),
-                  ],
-                )
-              ],
-            );
-        }
-      },
-    ));*/
+  }
+
+  Future<void> _goToTheLake() async {
+    final GoogleMapController controller = await _controller.future;
+    controller.animateCamera(CameraUpdate.newCameraPosition(_kLake));
   }
 }

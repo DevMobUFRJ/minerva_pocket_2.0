@@ -1,13 +1,14 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:minerva_pocket_new/screens/academic_list_screen.dart';
 
-class ServicesScreen extends StatelessWidget {
+class AcademicScreen extends StatelessWidget {
   final String idDocument;
-  ServicesScreen(this.idDocument);
+  AcademicScreen(this.idDocument);
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("Serviços")),
+      appBar: AppBar(title: Text("Acadêmico")),
       body: FutureBuilder<QuerySnapshot>(
           future: Firestore.instance
               .collection("home")
@@ -20,10 +21,10 @@ class ServicesScreen extends StatelessWidget {
               case ConnectionState.none:
               case ConnectionState.waiting:
                 return Container(
-                  height: 200.0,
+                  height: double.maxFinite,
                   alignment: Alignment.center,
                   child: CircularProgressIndicator(
-                    valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                    valueColor: AlwaysStoppedAnimation<Color>(Colors.black),
                   ),
                 );
               default:
@@ -31,18 +32,41 @@ class ServicesScreen extends StatelessWidget {
                     snapshot.data.documents.toList();
                 return ListView(
                   children: <Widget>[
-                    itemSubCategoria("images/fundo1.jpg",
-                        documents[0].data["subcategoria"], Icons.print),
                     itemSubCategoria(
+                        context,
+                        "images/fundo1.jpg",
+                        documents[0].data["subcategoria"],
+                        Icons.book,
+                        documents[0].documentID,
+                        "bibliotecas"),
+                    itemSubCategoria(
+                        context,
                         "images/fundo2.jpg",
                         documents[1].data["subcategoria"],
-                        Icons.monetization_on),
-                    itemSubCategoria("images/fundo3.jpg",
-                        documents[2].data["subcategoria"], Icons.shopping_cart),
+                        Icons.school,
+                        documents[1].documentID,
+                        "CAs e DAs"),
                     itemSubCategoria(
+                        context,
+                        "images/fundo3.jpg",
+                        documents[2].data["subcategoria"],
+                        Icons.slideshow,
+                        documents[2].documentID,
+                        "Auditórios"),
+                    itemSubCategoria(
+                        context,
                         "images/fundo4.jpg",
                         documents[3].data["subcategoria"],
-                        Icons.open_in_browser),
+                        Icons.phone,
+                        documents[3].documentID,
+                        "Secretarias"),
+                    itemSubCategoria(
+                        context,
+                        "images/fundo5.jpg",
+                        documents[4].data["subcategoria"],
+                        Icons.color_lens,
+                        documents[4].documentID,
+                        "Museus"),
                   ],
                 );
             }
@@ -50,10 +74,21 @@ class ServicesScreen extends StatelessWidget {
     );
   }
 
-  Widget itemSubCategoria(String image, String subcategoria, IconData icon,
-      {String idDoment}) {
+  Widget itemSubCategoria(
+      BuildContext context,
+      String image,
+      String subcategoria,
+      IconData icon,
+      String idDomentsub,
+      String colectioss) {
     return GestureDetector(
-      onTap: () {},
+      onTap: () {
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => AcademicListScreen(
+                    idDocument, subcategoria, idDomentsub, colectioss)));
+      },
       child: Stack(children: <Widget>[
         Container(
           color: Colors.white,

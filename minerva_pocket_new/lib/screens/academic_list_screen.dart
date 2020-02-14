@@ -1,17 +1,20 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:minerva_pocket_new/screens/food_screen_view.dart';
+import 'package:minerva_pocket_new/screens/academic_list_screen_view.dart';
 import 'package:transparent_image/transparent_image.dart';
-//Tela que mostra a lista de restaurantes
-//Possui um TextField de pesquisa que precisa ser melhorado
-class FoodScreen extends StatefulWidget {
+
+class AcademicListScreen extends StatefulWidget {
   final String idDocument;
-  FoodScreen(this.idDocument);
+  final String nome;
+  final String idDocumentAcademic;
+  final String idCollection;
+  AcademicListScreen(
+      this.idDocument, this.nome, this.idDocumentAcademic, this.idCollection);
   @override
-  _FoodScreenState createState() => _FoodScreenState();
+  _AcademicListScreenState createState() => _AcademicListScreenState();
 }
 
-class _FoodScreenState extends State<FoodScreen> {
+class _AcademicListScreenState extends State<AcademicListScreen> {
   TextEditingController controller = new TextEditingController();
   String filter;
   @override
@@ -33,7 +36,7 @@ class _FoodScreenState extends State<FoodScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("Alimentação")),
+      appBar: AppBar(title: Text(widget.nome)),
       body: Column(
         children: <Widget>[
           Container(
@@ -53,7 +56,9 @@ class _FoodScreenState extends State<FoodScreen> {
                 future: Firestore.instance
                     .collection("home")
                     .document(widget.idDocument)
-                    .collection("restaurantes")
+                    .collection("subcategorias")
+                    .document(widget.idDocumentAcademic)
+                    .collection(widget.idCollection)
                     .getDocuments(),
                 builder: (context, snapshot) {
                   switch (snapshot.connectionState) {
@@ -77,20 +82,12 @@ class _FoodScreenState extends State<FoodScreen> {
                                 ? cardFood(
                                     documents[index].data["nome"],
                                     documents[index].data["image"],
-                                    documents[index].data["tipo"],
-                                    documents[index].data["Preços"],
-                                    documents[index].data["Pagamento"],
-                                    documents[index].data["Localização"],
-                                  )
+                                    documents[index])
                                 : documents[index].data["nome"].contains(filter)
                                     ? cardFood(
                                         documents[index].data["nome"],
                                         documents[index].data["image"],
-                                        documents[index].data["tipo"],
-                                        documents[index].data["Preços"],
-                                        documents[index].data["Pagamento"],
-                                        documents[index].data["Localização"],
-                                      )
+                                        documents[index])
                                     : new Container();
                           });
                   }
@@ -101,16 +98,14 @@ class _FoodScreenState extends State<FoodScreen> {
     );
   }
 
-  Widget cardFood(String nome, String image, String tipo, String preco,
-      String pagamento, String localizao) {
+  Widget cardFood(String nome, String image, DocumentSnapshot document) {
     return GestureDetector(
       onTap: () {
-        //Ao clicar em um restaurante da lista, abre a FoodScreenView que recebe vários paramêtros
         Navigator.push(
             context,
             MaterialPageRoute(
-                builder: (context) => FoodScreenView(
-                    nome, image, tipo, preco, pagamento, localizao)));
+                builder: (context) =>
+                    AcademicListScreenView(widget.idCollection, document)));
       },
       child: Container(
         height: 50,
