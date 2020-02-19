@@ -35,119 +35,96 @@ class _FoodScreenViewState extends State<FoodScreenView> {
       target: LatLng(37.43296265331129, -122.08832357078792),
       tilt: 59.440717697143555,
       zoom: 19.151926040649414);
+  Widget itemLine(String title, String document) {
+    return Column(
+      children: <Widget>[
+        Container(
+            padding: EdgeInsets.only(left: 10.0, right: 10.0),
+            width: double.maxFinite,
+            child: Stack(children: <Widget>[
+              Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: <Widget>[
+                    Text(
+                      title,
+                      style: TextStyle(fontSize: 17.0, color: Colors.black),
+                    ),
+                  ]),
+              Row(mainAxisAlignment: MainAxisAlignment.end, children: <Widget>[
+                Text(
+                  document,
+                  style: TextStyle(fontSize: 17.0, color: Colors.grey),
+                ),
+              ])
+            ])),
+        SizedBox(height: 15.0, child: Divider()),
+      ],
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
-      body: ListView(
-        children: <Widget>[
-          Stack(
-            children: <Widget>[
-              //Image.network(documents[index].data["image"]),
-              FadeInImage.memoryNetwork(
-                placeholder: kTransparentImage,
-                image: widget.image,
-                fit: BoxFit.cover,
+        backgroundColor: Colors.white,
+        body: ListView(
+          children: <Widget>[
+            Container(
+              child: Stack(
+                children: <Widget>[
+                  Stack(
+                    alignment: Alignment.bottomLeft,
+                    children: <Widget>[
+                      //Image.network(documents[index].data["image"]),
+                      FadeInImage.memoryNetwork(
+                        placeholder: kTransparentImage,
+                        image: widget.image,
+                        fit: BoxFit.cover,
+                      ),
+                      Container(
+                        width: double.maxFinite,
+                        padding: EdgeInsets.only(left: 10.0, bottom: 5.0),
+                        child: Text(
+                          widget.nome,
+                          style: TextStyle(fontSize: 30.0, color: Colors.white),
+                          textAlign: TextAlign.start,
+                        ),
+                      ),
+                    ],
+                  ),
+                  IconButton(
+                      icon: Icon(Icons.arrow_back,
+                          color: Colors.white, size: 41.0),
+                      onPressed: () {
+                        Navigator.pop(context);
+                      }),
+                ],
               ),
-              IconButton(
-                  icon: Icon(Icons.arrow_back, color: Colors.white, size: 41.0),
-                  onPressed: () {
-                    Navigator.pop(context);
-                  }),
-              Container(
-                padding: EdgeInsets.only(top: 155.0, left: 10.0),
-                child: Text(
-                  widget.nome,
-                  style: TextStyle(fontSize: 30.0, color: Colors.white),
-                ),
+            ),
+            SizedBox(
+              height: 15.0,
+            ),
+            itemLine("Tipo", widget.tipo),
+            itemLine("Preço", widget.preco),
+            itemLine("Pagamento", widget.pagamento),
+            Container(
+              color: Colors.white,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: <Widget>[
+                  Container(
+                    child: Text(
+                      "Localização",
+                      style: TextStyle(fontSize: 17.0, color: Colors.black),
+                    ),
+                  ),
+                ],
               ),
-            ],
-          ),
-          SizedBox(
-            height: 15.0,
-          ),
-          Container(
-            color: Colors.white,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: <Widget>[
-                Container(
-                  child: Text(
-                    widget.tipo,
-                    style: TextStyle(fontSize: 17.0, color: Colors.grey),
-                  ),
-                ),
-              ],
             ),
-          ),
-          SizedBox(
-            height: 15.0,
-          ),
-          Container(
-            color: Colors.white,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: <Widget>[
-                Container(
-                  child: Text(
-                    widget.preco,
-                    style: TextStyle(fontSize: 17.0, color: Colors.grey),
-                  ),
-                ),
-              ],
+            SizedBox(
+              height: 15.0,
             ),
-          ),
-          SizedBox(
-            height: 15.0,
-          ),
-          Container(
-            color: Colors.white,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: <Widget>[
-                Container(
-                  child: Text(
-                    widget.pagamento,
-                    style: TextStyle(fontSize: 17.0, color: Colors.grey),
-                  ),
-                ),
-              ],
-            ),
-          ),
-          SizedBox(
-            height: 15.0,
-          ),
-          Container(
-            color: Colors.white,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: <Widget>[
-                Container(
-                  child: Text(
-                    "Localização",
-                    style: TextStyle(fontSize: 17.0, color: Colors.black),
-                  ),
-                ),
-              ],
-            ),
-          ),
-          SizedBox(
-            height: 15.0,
-          ),
-          Container(
-            height: 500,
-            child: GoogleMap(
-              mapType: MapType.hybrid,
-              initialCameraPosition: _kGooglePlex,
-              onMapCreated: (GoogleMapController controller) {
-                _controller.complete(controller);
-              },
-            ),
-          )
-        ],
-      ),
-    );
+          ],
+        ));
   }
 
   Future<void> _goToTheLake() async {

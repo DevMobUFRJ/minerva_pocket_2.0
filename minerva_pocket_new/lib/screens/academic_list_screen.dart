@@ -58,7 +58,7 @@ class _AcademicListScreenState extends State<AcademicListScreen> {
                     .document(widget.idDocument)
                     .collection("subcategorias")
                     .document(widget.idDocumentAcademic)
-                    .collection(widget.idCollection)
+                    .collection(widget.idCollection).orderBy("pos")
                     .getDocuments(),
                 builder: (context, snapshot) {
                   switch (snapshot.connectionState) {
