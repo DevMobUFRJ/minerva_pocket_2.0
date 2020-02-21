@@ -58,7 +58,8 @@ class _AcademicListScreenState extends State<AcademicListScreen> {
                     .document(widget.idDocument)
                     .collection("subcategorias")
                     .document(widget.idDocumentAcademic)
-                    .collection(widget.idCollection).orderBy("pos")
+                    .collection(widget.idCollection)
+                    .orderBy("pos")
                     .getDocuments(),
                 builder: (context, snapshot) {
                   switch (snapshot.connectionState) {
@@ -108,30 +109,35 @@ class _AcademicListScreenState extends State<AcademicListScreen> {
                     AcademicListScreenView(widget.idCollection, document)));
       },
       child: Container(
-        height: 50,
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Column(
-              mainAxisAlignment: MainAxisAlignment.center,
+          padding: EdgeInsets.only(left: 10.0, right: 10.0),
+          width: double.maxFinite,
+          child: Column(children: <Widget>[
+            Stack(
+              alignment: Alignment.center,
               children: <Widget>[
-                Text(
-                  nome,
-                  style: TextStyle(fontSize: 16.0),
-                ),
+                Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: <Widget>[
+                      Text(
+                        nome,
+                        style: TextStyle(fontSize: 17.0, color: Colors.black),
+                      ),
+                    ]),
+                Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: <Widget>[
+                      FadeInImage.memoryNetwork(
+                        width: 80,
+                        height: 50.0,
+                        placeholder: kTransparentImage,
+                        image: image,
+                        fit: BoxFit.cover,
+                      ),
+                    ]),
               ],
             ),
-            SizedBox(
-              width: 50.0,
-            ),
-            FadeInImage.memoryNetwork(
-              placeholder: kTransparentImage,
-              image: image,
-              fit: BoxFit.cover,
-            ),
-          ],
-        ),
-      ),
+            Divider(),
+          ])),
     );
   }
 }

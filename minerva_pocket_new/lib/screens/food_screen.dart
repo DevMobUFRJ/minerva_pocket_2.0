@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:minerva_pocket_new/screens/food_screen_view.dart';
 import 'package:transparent_image/transparent_image.dart';
+
 //Tela que mostra a lista de restaurantes
 //Possui um TextField de pesquisa que precisa ser melhorado
 class FoodScreen extends StatefulWidget {
@@ -70,6 +71,8 @@ class _FoodScreenState extends State<FoodScreen> {
                     default:
                       List<DocumentSnapshot> documents =
                           snapshot.data.documents.toList();
+                          GeoPoint geoPoint = documents[0].data["localizacao"];
+                          print(geoPoint.latitude);
                       return ListView.builder(
                           itemCount: documents.length,
                           itemBuilder: (context, index) {
@@ -78,19 +81,21 @@ class _FoodScreenState extends State<FoodScreen> {
                                     documents[index].data["nome"],
                                     documents[index].data["image"],
                                     documents[index].data["tipo"],
-                                    documents[index].data["Preços"],
-                                    documents[index].data["Pagamento"],
-                                    documents[index].data["Localização"],
-                                  )
+                                    documents[index].data["preco"],
+                                    documents[index].data["pagamento"],
+                                    documents[index].data["funcionamento"],
+                                    documents[index].data["localizacao"],
+                                    )
                                 : documents[index].data["nome"].contains(filter)
                                     ? cardFood(
                                         documents[index].data["nome"],
                                         documents[index].data["image"],
                                         documents[index].data["tipo"],
-                                        documents[index].data["Preços"],
-                                        documents[index].data["Pagamento"],
-                                        documents[index].data["Localização"],
-                                      )
+                                        documents[index].data["preco"],
+                                        documents[index].data["pagamento"],
+                                        documents[index].data["funcionamento"],
+                                        documents[index].data["localizacao"],
+                                        )
                                     : new Container();
                           });
                   }
@@ -102,7 +107,8 @@ class _FoodScreenState extends State<FoodScreen> {
   }
 
   Widget cardFood(String nome, String image, String tipo, String preco,
-      String pagamento, String localizao) {
+      String pagamento, String funcionamento,
+      GeoPoint localizacao) {
     return GestureDetector(
       onTap: () {
         //Ao clicar em um restaurante da lista, abre a FoodScreenView que recebe vários paramêtros
@@ -110,9 +116,40 @@ class _FoodScreenState extends State<FoodScreen> {
             context,
             MaterialPageRoute(
                 builder: (context) => FoodScreenView(
-                    nome, image, tipo, preco, pagamento, localizao)));
+                    nome, image, tipo, preco, pagamento, funcionamento,
+                    localizacao,)));
       },
       child: Container(
+          padding: EdgeInsets.only(left: 10.0, right: 10.0),
+          width: double.maxFinite,
+          child: Column(children: <Widget>[
+            Stack(
+              alignment: Alignment.center,
+              children: <Widget>[
+                Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: <Widget>[
+                      Text(
+                        nome,
+                        style: TextStyle(fontSize: 17.0, color: Colors.black),
+                      ),
+                    ]),
+                Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: <Widget>[
+                      FadeInImage.memoryNetwork(
+                        width: 80,
+                        height: 50.0,
+                        placeholder: kTransparentImage,
+                        image: image,
+                        fit: BoxFit.cover,
+                      ),
+                    ]),
+              ],
+            ),
+            Divider(),
+          ])),
+      /*child: Container(
         height: 50,
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -136,7 +173,7 @@ class _FoodScreenState extends State<FoodScreen> {
             ),
           ],
         ),
-      ),
+      ),*/
     );
   }
 }

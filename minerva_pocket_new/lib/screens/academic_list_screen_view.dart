@@ -1,28 +1,53 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:location/location.dart';
 import 'package:transparent_image/transparent_image.dart';
+import 'package:url_launcher/url_launcher.dart';
 
-class AcademicListScreenView extends StatelessWidget {
+class AcademicListScreenView extends StatefulWidget {
   final String idSubcategoria;
   final DocumentSnapshot document;
   AcademicListScreenView(this.idSubcategoria, this.document);
+
+  @override
+  _AcademicListScreenViewState createState() => _AcademicListScreenViewState();
+}
+
+class MapUtils {
+  MapUtils._();
+
+  static Future<void> openMap(double latitude, double longitude) async {
+    String googleUrl =
+        'https://www.google.com/maps/search/?api=1&query=$latitude,$longitude';
+    if (await canLaunch(googleUrl)) {
+      await launch(googleUrl);
+    } else {
+      throw 'Could not open the map.';
+    }
+  }
+}
+
+class _AcademicListScreenViewState extends State<AcademicListScreenView> {
+  GeoPoint localizacao;
+  Set<Marker> _markers = {};
+  GoogleMapController mapController;
+  Location location = Location();
   @override
   Widget build(BuildContext context) {
-    print(idSubcategoria);
-    print(document.data);
+    print(widget.idSubcategoria);
+    print(widget.document.data);
+    localizacao = widget.document.data["localizacao"];
     return Scaffold(
         backgroundColor: Colors.white, body: widgetScreenView(context));
   }
 
-  // document.data["centro"]
-  //Verifica a categoria do "Acadêmico" e decide a tela, por enquanto existe apenas a tela de bibliotecas
   widgetScreenView(BuildContext context) {
-    if (idSubcategoria == "bibliotecas")
+    if (widget.idSubcategoria == "bibliotecas")
       return academicBibliotecaScreenView(context);
-    else if (idSubcategoria == "CAs e DAs") {
+    else if (widget.idSubcategoria == "CAs e DAs") {
       return academicCAsDasScreenView(context);
-    }
-    else if (idSubcategoria == "Auditórios") {
+    } else if (widget.idSubcategoria == "Auditórios") {
       return academicAuditoriosScreenView(context);
     }
   }
@@ -54,6 +79,36 @@ class AcademicListScreenView extends StatelessWidget {
     );
   }
 
+  Widget map() {
+    return Container(
+      height: 300.0,
+      padding: EdgeInsets.all(10.0),
+      width: MediaQuery.of(context).size.width,
+      child: GoogleMap(
+        mapType: MapType.normal,
+        markers: _markers,
+        onMapCreated: (GoogleMapController controller) {
+          mapController = controller;
+          setState(() {
+            _markers.add(Marker(
+                markerId: MarkerId("oi"),
+                position: LatLng(localizacao.latitude, localizacao.longitude),
+                icon: BitmapDescriptor.defaultMarker,
+                onTap: () {
+                  MapUtils.openMap(localizacao.latitude, localizacao.longitude);
+                }));
+          });
+        },
+        initialCameraPosition: CameraPosition(
+          // 1
+          target: LatLng(localizacao.latitude, localizacao.longitude),
+          // 2
+          zoom: 20,
+        ),
+      ),
+    );
+  }
+
   Widget academicBibliotecaScreenView(BuildContext context) {
     return ListView(
       children: <Widget>[
@@ -65,15 +120,16 @@ class AcademicListScreenView extends StatelessWidget {
                 children: <Widget>[
                   //Image.network(documents[index].data["image"]),
                   FadeInImage.memoryNetwork(
+                    width: double.maxFinite,
                     placeholder: kTransparentImage,
-                    image: document.data["image"],
+                    image: widget.document.data["image"],
                     fit: BoxFit.cover,
                   ),
                   Container(
                     width: double.maxFinite,
                     padding: EdgeInsets.only(left: 10.0, bottom: 5.0),
                     child: Text(
-                      document.data["nome"],
+                      widget.document.data["nome"],
                       style: TextStyle(fontSize: 30.0, color: Colors.white),
                       textAlign: TextAlign.start,
                     ),
@@ -91,9 +147,10 @@ class AcademicListScreenView extends StatelessWidget {
         SizedBox(
           height: 15.0,
         ),
-        itemLine("Centro:", document.data["centro"]),
-        itemLine("Funcionamento", document.data["funcionamento"]),
-        itemLine("Localização", document.data["localização"]),
+        itemLine("Centro:", widget.document.data["centro"]),
+        itemLine("Tipo", widget.document.data["tipo"]),
+        itemLine("Funcionamento", widget.document.data["funcionamento"]),
+        //itemLine("Localização", document.data["localizacao"]),
         Container(
           color: Colors.white,
           child: Column(
@@ -111,6 +168,7 @@ class AcademicListScreenView extends StatelessWidget {
         SizedBox(
           height: 15.0,
         ),
+        map(),
       ],
     );
   }
@@ -126,15 +184,16 @@ class AcademicListScreenView extends StatelessWidget {
                 children: <Widget>[
                   //Image.network(documents[index].data["image"]),
                   FadeInImage.memoryNetwork(
+                    width: double.maxFinite,
                     placeholder: kTransparentImage,
-                    image: document.data["image"],
+                    image: widget.document.data["image"],
                     fit: BoxFit.cover,
                   ),
                   Container(
                     width: double.maxFinite,
                     padding: EdgeInsets.only(left: 10.0, bottom: 5.0),
                     child: Text(
-                      document.data["nome"],
+                      widget.document.data["nome"],
                       style: TextStyle(fontSize: 30.0, color: Colors.white),
                       textAlign: TextAlign.start,
                     ),
@@ -152,11 +211,12 @@ class AcademicListScreenView extends StatelessWidget {
         SizedBox(
           height: 15.0,
         ),
-        itemLine("Centro:", document.data["Centro"]),
-        itemLine("Funcionamento", document.data["Funcionamento"]),
-        itemLine("Contato", document.data["Contato"]),
-        itemLine("Observações", document.data["Observações"]),
-        itemLine("Localização", document.data["Localização"]),
+        itemLine("Centro", widget.document.data["centro"]),
+        itemLine("Tipo", widget.document.data["tipo"]),
+        itemLine("Funcionamento", widget.document.data["funcionamento"]),
+        itemLine("Contato", widget.document.data["contato"]),
+        itemLine("Observações", widget.document.data["observacoes"]),
+        //itemLine("Localização", document.data["localizacao"]),
         Container(
           color: Colors.white,
           child: Column(
@@ -174,9 +234,11 @@ class AcademicListScreenView extends StatelessWidget {
         SizedBox(
           height: 15.0,
         ),
+        map(),
       ],
     );
   }
+
   Widget academicAuditoriosScreenView(BuildContext context) {
     return ListView(
       children: <Widget>[
@@ -189,14 +251,14 @@ class AcademicListScreenView extends StatelessWidget {
                   //Image.network(documents[index].data["image"]),
                   FadeInImage.memoryNetwork(
                     placeholder: kTransparentImage,
-                    image: document.data["image"],
+                    image: widget.document.data["image"],
                     fit: BoxFit.cover,
                   ),
                   Container(
                     width: double.maxFinite,
                     padding: EdgeInsets.only(left: 10.0, bottom: 5.0),
                     child: Text(
-                      document.data["nome"],
+                      widget.document.data["nome"],
                       style: TextStyle(fontSize: 30.0, color: Colors.white),
                       textAlign: TextAlign.start,
                     ),
@@ -214,9 +276,9 @@ class AcademicListScreenView extends StatelessWidget {
         SizedBox(
           height: 15.0,
         ),
-        itemLine("Centro:", document.data["Centro"]),
-        verificador(document.data.containsKey("Observações")),
-        itemLine("Localização", document.data["Localização"]),
+        itemLine("Centro", widget.document.data["centro"]),
+        verificador(widget.document.data.containsKey("observacoes")),
+        //itemLine("Localização", document.data["Localização"]),
         Container(
           color: Colors.white,
           child: Column(
@@ -234,15 +296,16 @@ class AcademicListScreenView extends StatelessWidget {
         SizedBox(
           height: 15.0,
         ),
+        map(),
       ],
     );
   }
-  verificador(bool key){
+
+  verificador(bool key) {
     print(key);
-    if(key == true){
-      return  itemLine("Observações", document.data["Observações"]);
-    }
-    else{
+    if (key == true) {
+      return itemLine("Observações", widget.document.data["observacoes"]);
+    } else {
       return Container();
     }
   }

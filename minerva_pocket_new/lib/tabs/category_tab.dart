@@ -67,14 +67,15 @@ class CategoryTab extends StatelessWidget {
                         }
                       },
                       child: Stack(
+                        alignment: Alignment.center,
                         children: <Widget>[
                           FadeInImage.memoryNetwork(
+                            width: double.maxFinite,
                             placeholder: kTransparentImage,
                             image: documents[index].data["image"],
                             fit: BoxFit.cover,
                           ),
                           Container(
-                            padding: EdgeInsets.only(top: 135.0, left: 10.0),
                             child: Text(
                               documents[index].data["categoria"],
                               style: TextStyle(

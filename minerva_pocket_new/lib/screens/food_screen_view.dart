@@ -1,8 +1,10 @@
 import 'dart:async';
-
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:location/location.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:transparent_image/transparent_image.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 //Tela que mostra os dados do restaurante
 //Localização ainda não funciona
@@ -13,28 +15,60 @@ class FoodScreenView extends StatefulWidget {
   final String tipo;
   final String preco;
   final String pagamento;
-  final String localizacao;
+  final String funcionamento;
+  final GeoPoint localizacao;
 
   FoodScreenView(this.nome, this.image, this.tipo, this.preco, this.pagamento,
-      this.localizacao);
+      this.funcionamento, this.localizacao);
 
   @override
   _FoodScreenViewState createState() => _FoodScreenViewState();
 }
 
+class MapUtils {
+  MapUtils._();
+
+  static Future<void> openMap(double latitude, double longitude) async {
+    String googleUrl =
+        'https://www.google.com/maps/search/?api=1&query=$latitude,$longitude';
+    if (await canLaunch(googleUrl)) {
+      await launch(googleUrl);
+    } else {
+      throw 'Could not open the map.';
+    }
+  }
+}
+
 class _FoodScreenViewState extends State<FoodScreenView> {
-  Completer<GoogleMapController> _controller = Completer();
+  Set<Marker> _markers = {};
+  GoogleMapController mapController;
+  Location location = Location();
+  Marker marker;
+  @override
+  void initState() {
+    super.initState();
+    print(widget.localizacao.toString());
+    /*location.onLocationChanged().listen((location) async {
+      if(marker != null) {
+        mapController.removeMarker(marker);
+      }
+      marker = await mapController?.addMarker(MarkerOptions(
+        position: LatLng(location["latitude"], location["longitude"]),
+      ));
+      mapController?.moveCamera(
+        CameraUpdate.newCameraPosition(
+          CameraPosition(
+            target: LatLng(
+              location["latitude"],
+              location["longitude"],
+            ),
+            zoom: 20.0,
+          ),
+        ),
+      );
+    });*/
+  }
 
-  static final CameraPosition _kGooglePlex = CameraPosition(
-    target: LatLng(37.42796133580664, -122.085749655962),
-    zoom: 14.4746,
-  );
-
-  static final CameraPosition _kLake = CameraPosition(
-      bearing: 192.8334901395799,
-      target: LatLng(37.43296265331129, -122.08832357078792),
-      tilt: 59.440717697143555,
-      zoom: 19.151926040649414);
   Widget itemLine(String title, String document) {
     return Column(
       children: <Widget>[
@@ -106,6 +140,7 @@ class _FoodScreenViewState extends State<FoodScreenView> {
             itemLine("Tipo", widget.tipo),
             itemLine("Preço", widget.preco),
             itemLine("Pagamento", widget.pagamento),
+            itemLine("Funcionamento", widget.funcionamento),
             Container(
               color: Colors.white,
               child: Column(
@@ -123,12 +158,37 @@ class _FoodScreenViewState extends State<FoodScreenView> {
             SizedBox(
               height: 15.0,
             ),
+            Container(
+              height: 300.0,
+              padding: EdgeInsets.all(10.0),
+              width: MediaQuery.of(context).size.width,
+              child: GoogleMap(
+                mapType: MapType.normal,
+                markers: _markers,
+                onMapCreated: (GoogleMapController controller) {
+                  mapController = controller;
+                  setState(() {
+                    _markers.add(Marker(
+                        markerId: MarkerId("oi"),
+                        position: LatLng(widget.localizacao.latitude,
+                            widget.localizacao.longitude),
+                        icon: BitmapDescriptor.defaultMarker,
+                        onTap: () {
+                          MapUtils.openMap(widget.localizacao.latitude,
+                              widget.localizacao.longitude);
+                        }));
+                  });
+                },
+                initialCameraPosition: CameraPosition(
+                  // 1
+                  target: LatLng(widget.localizacao.latitude,
+                      widget.localizacao.longitude),
+                  // 2
+                  zoom: 20,
+                ),
+              ),
+            ),
           ],
         ));
-  }
-
-  Future<void> _goToTheLake() async {
-    final GoogleMapController controller = await _controller.future;
-    controller.animateCamera(CameraUpdate.newCameraPosition(_kLake));
   }
 }
