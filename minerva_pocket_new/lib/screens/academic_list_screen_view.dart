@@ -49,6 +49,8 @@ class _AcademicListScreenViewState extends State<AcademicListScreenView> {
       return academicCAsDasScreenView(context);
     } else if (widget.idSubcategoria == "Auditórios") {
       return academicAuditoriosScreenView(context);
+    } else if (widget.idSubcategoria == "Secretarias") {
+      return academicSecretariasScreenView(context);
     }
   }
 
@@ -276,8 +278,9 @@ class _AcademicListScreenViewState extends State<AcademicListScreenView> {
         SizedBox(
           height: 15.0,
         ),
-        itemLine("Centro", widget.document.data["centro"]),
-        verificador(widget.document.data.containsKey("observacoes")),
+        widgetVisible(widget.document),
+        //itemLine("Centro", widget.document.data["centro"]),
+        //verificador(widget.document.data.containsKey("observacoes")),
         //itemLine("Localização", document.data["Localização"]),
         Container(
           color: Colors.white,
@@ -301,6 +304,85 @@ class _AcademicListScreenViewState extends State<AcademicListScreenView> {
     );
   }
 
+  Widget academicSecretariasScreenView(BuildContext context) {
+    return ListView(
+      children: <Widget>[
+        Container(
+          child: Stack(
+            children: <Widget>[
+              Stack(
+                alignment: Alignment.bottomLeft,
+                children: <Widget>[
+                  //Image.network(documents[index].data["image"]),
+                  FadeInImage.memoryNetwork(
+                    placeholder: kTransparentImage,
+                    image: widget.document.data["image"],
+                    fit: BoxFit.cover,
+                  ),
+                  Container(
+                    width: double.maxFinite,
+                    padding: EdgeInsets.only(left: 10.0, bottom: 5.0),
+                    child: Text(
+                      widget.document.data["nome"],
+                      style: TextStyle(fontSize: 30.0, color: Colors.white),
+                      textAlign: TextAlign.start,
+                    ),
+                  ),
+                ],
+              ),
+              IconButton(
+                  icon: Icon(Icons.arrow_back, color: Colors.white, size: 41.0),
+                  onPressed: () {
+                    Navigator.pop(context);
+                  }),
+            ],
+          ),
+        ),
+        SizedBox(
+          height: 15.0,
+        ),
+        widgetVisible(widget.document),
+        //itemLine("Centro", widget.document.data["centro"]),
+        //verificador(widget.document.data.containsKey("observacoes")),
+        //itemLine("Localização", document.data["Localização"]),
+        Container(
+          color: Colors.white,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: <Widget>[
+              Container(
+                child: Text(
+                  "Localização",
+                  style: TextStyle(fontSize: 17.0, color: Colors.black),
+                ),
+              ),
+            ],
+          ),
+        ),
+        SizedBox(
+          height: 15.0,
+        ),
+        map(),
+      ],
+    );
+  }
+  Widget widgetVisible (DocumentSnapshot documentSnapshot) {
+    List<Widget> widgets = [];
+    if(documentSnapshot.data["centro"] != "null"){
+      widgets.add(itemLine("Centro", documentSnapshot.data["centro"]));
+    }
+    if(documentSnapshot.data["observacoes"] != "null"){
+      widgets.add(itemLine("Observações", documentSnapshot.data["observacoes"]));
+    }
+    if(documentSnapshot.data["contato"] != "null"){
+      widgets.add(itemLine("Contato", documentSnapshot.data["contato"]));
+    }
+    if(documentSnapshot.data["funcionamento"] != "null"){
+      widgets.add(itemLine("Funcionamento", documentSnapshot.data["funcionamento"]));
+    }
+    return new Column(children: widgets.toList());
+  }
+  //Inutilizável por enquanto
   verificador(bool key) {
     print(key);
     if (key == true) {
