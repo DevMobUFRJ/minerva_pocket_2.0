@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:minerva_pocket_new/tabs/category_tab.dart';
+import 'package:minerva_pocket_new/tabs/total_location_tab.dart';
 
 class HomeTab extends StatelessWidget {
   @override
@@ -31,7 +32,7 @@ class HomeTab extends StatelessWidget {
             body: TabBarView(
               children: [
                 CategoryTab(),
-                Icon(Icons.directions_transit),
+                TotalLocationTab(),
               ],
             ),
           ),

@@ -169,6 +169,9 @@ class _FoodScreenViewState extends State<FoodScreenView> {
                   mapController = controller;
                   setState(() {
                     _markers.add(Marker(
+                        infoWindow: InfoWindow(
+                          title: widget.nome,
+                        ),
                         markerId: MarkerId("oi"),
                         position: LatLng(widget.localizacao.latitude,
                             widget.localizacao.longitude),
