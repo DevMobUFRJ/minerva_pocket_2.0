@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:minerva_pocket_new/screens/acedemic_screen.dart';
 import 'package:minerva_pocket_new/screens/food_screen.dart';
+import 'package:minerva_pocket_new/screens/infrastructure_screen.dart';
 import 'package:minerva_pocket_new/screens/services_screen.dart';
 import 'package:transparent_image/transparent_image.dart';
 
@@ -32,59 +33,72 @@ class CategoryTab extends StatelessWidget {
                   itemCount: documents.length,
                   itemBuilder: (context, index) {
                     return GestureDetector(
-                      //A tela que aparece depende da categoria do firebase
-                      //Ex: Se a categoria for Serviços vai pra tela de Serviços
-                      //Cada tela possui um construtor que recebe o ID do documento do firebase para facilitar o caminho de pesquisa
-                      onTap: () {
-                        if (documents[index].data["categoria"].toString() ==
-                            "Serviços") {
-                          print(documents[index].documentID);
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => ServicesScreen(
-                                      documents[index].documentID)));
-                        } else if (documents[index]
-                                .data["categoria"]
-                                .toString() ==
-                            "Alimentação") {
-                          print(documents[index].documentID);
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) =>
-                                      FoodScreen(documents[index].documentID)));
-                        } else if (documents[index]
-                                .data["categoria"]
-                                .toString() ==
-                            "Acadêmico") {
-                          print(documents[index].documentID);
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => AcademicScreen(
-                                      documents[index].documentID)));
-                        }
-                      },
-                      child: Stack(
-                        alignment: Alignment.center,
-                        children: <Widget>[
-                          FadeInImage.memoryNetwork(
-                            width: double.maxFinite,
-                            placeholder: kTransparentImage,
-                            image: documents[index].data["image"],
-                            fit: BoxFit.cover,
+                        //A tela que aparece depende da categoria do firebase
+                        //Ex: Se a categoria for Serviços vai pra tela de Serviços
+                        //Cada tela possui um construtor que recebe o ID do documento do firebase para facilitar o caminho de pesquisa
+                        onTap: () {
+                          if (documents[index].data["categoria"].toString() ==
+                              "Serviços") {
+                            print(documents[index].documentID);
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => ServicesScreen(
+                                        documents[index].documentID)));
+                          } else if (documents[index]
+                                  .data["categoria"]
+                                  .toString() ==
+                              "Alimentação") {
+                            print(documents[index].documentID);
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => FoodScreen(
+                                        documents[index].documentID)));
+                          } else if (documents[index]
+                                  .data["categoria"]
+                                  .toString() ==
+                              "Acadêmico") {
+                            print(documents[index].documentID);
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => AcademicScreen(
+                                        documents[index].documentID)));
+                          }
+                          else if (documents[index]
+                                  .data["categoria"]
+                                  .toString() ==
+                              "Infraestrutura") {
+                            print(documents[index].documentID);
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => InfrastructureScreen(
+                                        documents[index].documentID)));
+                          }
+                        },
+                        child: Container(
+                          child: Stack(
+                            alignment: Alignment.center,
+                            children: <Widget>[
+                              FadeInImage.memoryNetwork(
+                                height: 300.0,
+                                width: double.maxFinite,
+                                placeholder: kTransparentImage,
+                                image: documents[index].data["image"],
+                                fit: BoxFit.cover,
+                              ),
+                              Container(
+                                child: Text(
+                                  documents[index].data["categoria"],
+                                  style: TextStyle(
+                                      fontSize: 30.0, color: Colors.white),
+                                ),
+                              ),
+                            ],
                           ),
-                          Container(
-                            child: Text(
-                              documents[index].data["categoria"],
-                              style: TextStyle(
-                                  fontSize: 30.0, color: Colors.white),
-                            ),
-                          ),
-                        ],
-                      ),
-                    );
+                        ));
                   });
           }
         });
