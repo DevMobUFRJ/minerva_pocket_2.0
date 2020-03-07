@@ -18,17 +18,21 @@ class _FoodScreenState extends State<FoodScreen> {
   @override
   initState() {
     super.initState();
-    controller.addListener(() {
+    /*controller.addListener(() {
       setState(() {
         filter = controller.text;
       });
-    });
+    });*/
   }
 
   @override
   void dispose() {
     controller.dispose();
     super.dispose();
+  }
+
+  void clear() {
+    controller.text = "";
   }
 
   @override
@@ -39,13 +43,31 @@ class _FoodScreenState extends State<FoodScreen> {
         children: <Widget>[
           Container(
             height: 50.0,
-            padding: EdgeInsets.all(10.0),
             color: Color(0xff00a550),
             child: Container(
               color: Colors.white,
               child: TextField(
-                decoration: new InputDecoration(labelText: "Pesquisar"),
+                style: TextStyle(
+                  fontSize: 20.0,
+                ),
+                onChanged: (text) {
+                  setState(() {
+                    filter = controller.text;
+                  });
+                  /*controller.addListener(() {
+                    setState(() {
+                      filter = controller.text;
+                    });
+                  });*/
+                },
+                decoration: new InputDecoration(
+                    hintText: "Pesquisar",
+                    prefixStyle: TextStyle(
+                      fontSize: 20.0,
+                    ),
+                    prefixIcon: Icon(Icons.search)),
                 controller: controller,
+                textAlign: TextAlign.start,
               ),
             ),
           ),
@@ -71,8 +93,8 @@ class _FoodScreenState extends State<FoodScreen> {
                     default:
                       List<DocumentSnapshot> documents =
                           snapshot.data.documents.toList();
-                          GeoPoint geoPoint = documents[0].data["localizacao"];
-                          print(geoPoint.latitude);
+                      GeoPoint geoPoint = documents[0].data["localizacao"];
+                      print(geoPoint.latitude);
                       return ListView.builder(
                           itemCount: documents.length,
                           itemBuilder: (context, index) {
@@ -85,8 +107,8 @@ class _FoodScreenState extends State<FoodScreen> {
                                     documents[index].data["pagamento"],
                                     documents[index].data["funcionamento"],
                                     documents[index].data["localizacao"],
-                                    )
-                                : documents[index].data["nome"].contains(filter)
+                                  )
+                                : documents[index].data["nome"].toString().toLowerCase().contains(filter.toLowerCase())
                                     ? cardFood(
                                         documents[index].data["nome"],
                                         documents[index].data["image"],
@@ -95,7 +117,7 @@ class _FoodScreenState extends State<FoodScreen> {
                                         documents[index].data["pagamento"],
                                         documents[index].data["funcionamento"],
                                         documents[index].data["localizacao"],
-                                        )
+                                      )
                                     : new Container();
                           });
                   }
@@ -107,8 +129,7 @@ class _FoodScreenState extends State<FoodScreen> {
   }
 
   Widget cardFood(String nome, String image, String tipo, String preco,
-      String pagamento, String funcionamento,
-      GeoPoint localizacao) {
+      String pagamento, String funcionamento, GeoPoint localizacao) {
     return GestureDetector(
       onTap: () {
         //Ao clicar em um restaurante da lista, abre a FoodScreenView que recebe vários paramêtros
@@ -116,8 +137,14 @@ class _FoodScreenState extends State<FoodScreen> {
             context,
             MaterialPageRoute(
                 builder: (context) => FoodScreenView(
-                    nome, image, tipo, preco, pagamento, funcionamento,
-                    localizacao,)));
+                      nome,
+                      image,
+                      tipo,
+                      preco,
+                      pagamento,
+                      funcionamento,
+                      localizacao,
+                    )));
       },
       child: Container(
           padding: EdgeInsets.only(left: 10.0, right: 10.0),

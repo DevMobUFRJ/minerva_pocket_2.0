@@ -20,11 +20,11 @@ class _InfrastructureListScreen extends State<InfrastructureListScreen> {
   @override
   initState() {
     super.initState();
-    controller.addListener(() {
+    /*controller.addListener(() {
       setState(() {
         filter = controller.text;
       });
-    });
+    });*/
   }
 
   @override
@@ -41,13 +41,31 @@ class _InfrastructureListScreen extends State<InfrastructureListScreen> {
         children: <Widget>[
           Container(
             height: 50.0,
-            padding: EdgeInsets.all(10.0),
             color: Color(0xff00a550),
             child: Container(
               color: Colors.white,
               child: TextField(
-                decoration: new InputDecoration(labelText: "Pesquisar"),
+                style: TextStyle(
+                  fontSize: 20.0,
+                ),
+                onChanged: (text) {
+                  setState(() {
+                    filter = controller.text;
+                  });
+                  /*controller.addListener(() {
+                    setState(() {
+                      filter = controller.text;
+                    });
+                  });*/
+                },
+                decoration: new InputDecoration(
+                    hintText: "Pesquisar",
+                    prefixStyle: TextStyle(
+                      fontSize: 20.0,
+                    ),
+                    prefixIcon: Icon(Icons.search)),
                 controller: controller,
+                textAlign: TextAlign.start,
               ),
             ),
           ),
@@ -83,7 +101,7 @@ class _InfrastructureListScreen extends State<InfrastructureListScreen> {
                                     documents[index].data["nome"],
                                     documents[index].data["image"],
                                     documents[index])
-                                : documents[index].data["nome"].contains(filter)
+                                : documents[index].data["nome"].toString().toLowerCase().contains(filter.toLowerCase())
                                     ? cardFood(
                                         documents[index].data["nome"],
                                         documents[index].data["image"],

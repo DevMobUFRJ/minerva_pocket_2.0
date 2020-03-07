@@ -21,6 +21,9 @@ class HomeTab extends StatelessWidget {
           child: Scaffold(
             backgroundColor: Color(0xff00a550),
             appBar: TabBar(
+              labelStyle: TextStyle(
+                fontSize: 20.0
+              ),
               indicatorColor: Colors.white,
               tabs: [
                 Tab(

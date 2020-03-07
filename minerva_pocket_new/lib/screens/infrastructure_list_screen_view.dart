@@ -46,7 +46,9 @@ class _InfrastructureListScreenViewState
 
   widgetScreenView(BuildContext context) {
     if (widget.idSubcategoria == "Banheiros")
-      return academicBanheiroScreenView(context);
+      return academicBanheirosScreenView(context);
+    else if (widget.idSubcategoria == "Bebedouros")
+      return academicBebedourosScreenView(context);
     /*else if (widget.idSubcategoria == "CAs e DAs") {
       return academicCAsDasScreenView(context);
     } else if (widget.idSubcategoria == "Auditórios") {
@@ -113,7 +115,7 @@ class _InfrastructureListScreenViewState
     );
   }
 
-  Widget academicBanheiroScreenView(BuildContext context) {
+  Widget academicBanheirosScreenView(BuildContext context) {
     return ListView(
       children: <Widget>[
         Container(
@@ -176,7 +178,7 @@ class _InfrastructureListScreenViewState
     );
   }
 
-  Widget academicCAsDasScreenView(BuildContext context) {
+  Widget academicBebedourosScreenView(BuildContext context) {
     return ListView(
       children: <Widget>[
         Container(
@@ -214,11 +216,8 @@ class _InfrastructureListScreenViewState
         SizedBox(
           height: 15.0,
         ),
-        itemLine("Centro", widget.document.data["centro"]),
-        itemLine("Tipo", widget.document.data["tipo"]),
-        itemLine("Funcionamento", widget.document.data["funcionamento"]),
-        itemLine("Contato", widget.document.data["contato"]),
-        itemLine("Observações", widget.document.data["observacoes"]),
+        widgetVisible(widget.document),
+
         //itemLine("Localização", document.data["localizacao"]),
         Container(
           color: Colors.white,
