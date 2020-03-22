@@ -45,8 +45,8 @@ class CustomDrawer extends StatelessWidget {
           Divider(
             color: Colors.transparent,
           ),
-          DrawerTile(Icons.email, "Contato", pageController, 0),
-          DrawerTile(Icons.person, "Sobre", pageController, 1),
+          DrawerTile(Icons.email, "Contato", pageController, 1),
+          DrawerTile(Icons.person, "Sobre", pageController, 2),
           Divider(
             color: Colors.transparent,
           ),
@@ -63,7 +63,7 @@ class CustomDrawer extends StatelessWidget {
           Divider(
             color: Colors.transparent,
           ),
-          DrawerTile(Icons.rate_review, "Google Play", pageController, 2),
+          DrawerTile(Icons.rate_review, "Google Play", pageController, 3),
           Divider(
             color: Colors.transparent,
           ),
@@ -80,7 +80,7 @@ class CustomDrawer extends StatelessWidget {
           Divider(
             color: Colors.transparent,
           ),
-          DrawerTile(Icons.lightbulb_outline, "Como podemos melhorar?", pageController, 3),
+          DrawerTile(Icons.lightbulb_outline, "Como podemos melhorar?", pageController, 4),
         ]),
       ]),
     );
