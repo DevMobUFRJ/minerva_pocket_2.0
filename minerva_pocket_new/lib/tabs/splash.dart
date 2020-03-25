@@ -10,12 +10,9 @@ class _SplashState extends State<Splash> {
   @override
   initState() {
     super.initState();
-    Future.delayed(const Duration(milliseconds: 2500), () {
-      setState(() {
-        Navigator.of(context).pushAndRemoveUntil(
-            MaterialPageRoute(builder: (context) => HomeScreen()),
-            (Route<dynamic> route) => false);
-      });
+    Future.delayed(Duration(milliseconds: 2500)).then((_) {
+      Navigator.of(context)
+          .pushReplacement(MaterialPageRoute(builder: (context) => HomeScreen()));
     });
   }
 
